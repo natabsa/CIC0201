@@ -41,7 +41,7 @@ def mod_inverse(a, m):
     
     mdc, x, y = ext_euclides(a, m)
     
-    if(mdc !=) {
+    if(mdc != 1) {
         print("Não pode gerar o inverso multiplicativo de ", a, " mod ", m)
         exit()
     }
