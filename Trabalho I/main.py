@@ -25,14 +25,17 @@ def mod_exp(base, expo, c):
 def ext_euclides(a, b):
     
     a, b = gmpy2.mpz(a), gmpy2.mpz(b)
+    # As "primeiras duas rodadas" (a*1 + b*0 = a, a*0 + b*1 = b)
     x0, x1 = gmpy2.mpz(1), gmpy2.mpz(0)
     y0, y1 = gmpy2.mpz(0), gmpy2.mpz(1)
-    while (r = a % b) > 0:
+    r = a % b
+    while  r > 0:
         # a = b*q + r
         q = a // b
         a, b = b, r
         x0, x1 = x1, x0 - q * x1
         y0, y1 = y1, y0 - q * y1
+        r = a % b
         
     return a, x0, y0
 # -----------------------------------------------------------------------------------------------------
@@ -41,10 +44,9 @@ def mod_inverse(a, m):
     
     mdc, x, y = ext_euclides(a, m)
     
-    if(mdc != 1) {
+    if(mdc != 1):
         print("Não pode gerar o inverso multiplicativo de ", a, " mod ", m)
         exit()
-    }
        
     return x % m
 # -----------------------------------------------------------------------------------------------------
@@ -56,34 +58,30 @@ def miller_rabin(n, k):
     if n <= 1 or n % 2 == 0:
         return False
 
-    # Passo 1: Encontrar 's' e 'd' tal que n - 1 = 2^s * d
+    # encontras 's' e 'd' em 'n - 1 = 2^s * d'
     s = 0
     d = n - 1
     while d % 2 == 0:
         s += 1
         d //= 2
 
-    # Executar o teste 'k' vezes
     for _ in range(k):
-        # Passo 2: Escolher base aleatória 'a'
         a = random.randrange(2, n - 1)
         
-        # Passo 3: x = a^d mod n (Usa a função da Fase 1)
+        # x = a^d mod n
         x = mod_exp(a, d, n)
         
         if x == 1 or x == n - 1:
             continue
             
-        # Passo 4: Elevações ao quadrado sucessivas
+        # faz o teste elevando ao quadrado a cada iteracao
         for _ in range(s - 1):
             x = mod_exp(x, 2, n)
             if x == n - 1:
                 break
         else:
-            # Se o laço terminar sem 'break', n é composto
             return False
             
-    # Se passou em todas as k iterações, é (com altíssima probabilidade) primo
     return True
 # -----------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------
