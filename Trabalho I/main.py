@@ -91,23 +91,22 @@ def get_gen(p, q):
     q = gmpy2.mpz(q)
     
     # O gerador deve estar no intervalo [2, p - 2]
-    limite_inferior = gmpy2.mpz(2)
-    limite_superior = p - 2
+    lower_limit = gmpy2.mpz(2)
+    upper_limit = p - 2
     
     while True:
-        g = gmpy2.mpz(random.randrange(int(limite_inferior), int(limite_superior) + 1)) 
-        condicao1 = mod_exp(g, 2, p)
-        if condicao1 == 1:
+        g = gmpy2.mpz(random.randrange(int(lower_limit), int(upper_limit) + 1)) 
+    
+        if mod_exp(g, 2, p) == 1:
             continue
-        condicao2 = mod_exp(g, q, p)
-        if condicao2 == 1:
+        if mod_exp(g, q, p) == 1:
             continue
-            
+
         return g
 # -----------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------
 # Diffie-Hellman
-def get_prime_candidate(bits):
+def get_odd(bits):
     p = gmpy2.mpz(random.getrandbits(bits))
     p |= (1 << bits - 1) | 1
     return p
@@ -116,7 +115,7 @@ def get_prime_candidate(bits):
 # Diffie-Hellman
 def get_prime(bits):
     while True:
-        p = get_prime_candidate(bits)
+        p = get_odd(bits)
         if miller_rabin(p, 40):
             return p
 # -----------------------------------------------------------------------------------------------------
@@ -132,17 +131,17 @@ def get_sure_prime(bits):
 # -----------------------------------------------------------------------------------------------------
 # ElGamal
 def txt_to_int(txt):
-    return gmpy2.mpz(int.from_bytes(txt.encode('utf-8'), 'big'))
+    return gmpy2.mpz(int.from_bytes(txt.encode('utf-8')))
 # -----------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------
 # ElGamal
 def int_to_txt(i):
     size = (int(i).bit_length() + 7) // 8
-    return int(i).to_bytes(size, 'big').decode('utf-8')
+    return int(i).to_bytes(size).decode('utf-8')
 # -----------------------------------------------------------------------------------------------------
 
 # --------------------------------------------------
-# Geração de par de chaves ElGamal
+# ElGamal
 def generate_keys(p, g):
     x = gmpy2.mpz(random.randrange(2, p - 2))
     h = mod_exp(g, x, p)
@@ -150,19 +149,21 @@ def generate_keys(p, g):
 # --------------------------------------------------
 
 # --------------------------------------------------
-# Encripta uma mensagem de texto usando a chave pública do receptor
 def encrypt_elgamal(txt, p, g, h):
     m = txt_to_int(txt)
+
     k = gmpy2.mpz(random.randrange(2, p - 2))
+
     c1 = mod_exp(g, k, p)
     s = mod_exp(h, k, p)
     c2 = (m * s) % p
+
     return c1, c2
 # --------------------------------------------------
 
 # --------------------------------------------------
-# Desencripta o par (c1, c2) usando a chave privada do receptor
 def decrypt_elgamal(cipher, p, x):
+    
     c1, c2 = cipher
     s = mod_exp(c1, x, p)
     s_inv = mod_inverse(s, p)
@@ -171,13 +172,12 @@ def decrypt_elgamal(cipher, p, x):
 # --------------------------------------------------
 
 # --------------------------------------------------
-# Simula uma troca simples de mensagem entre A e B
 def messaging():
     p, q = get_sure_prime(64)
     g = get_gen(p, q)
 
     b_priv, b_pub = generate_keys(p, g)
-    msg = "Olá Mundo"
+    msg = "Ola Mundo"
     cipher = encrypt_elgamal(msg, p, g, b_pub)
     decrypted = decrypt_elgamal(cipher, p, b_priv)
 

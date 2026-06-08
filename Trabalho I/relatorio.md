@@ -41,17 +41,17 @@ Assim A e B conseguem gerar o mesmo segredo
 
 ## Geração de Chaves
 
-1. Obtem-se os valores p e g
-2. B escolhe uma chave privada x.
-3. B calcula sua chave pública y = g^x mod p (mod_exp)
+1. Obtem-se os valores p e g (ordem e gerador)
+2. B escolhe a chave privada x.
+3. B calcula a chave pública h = g^x mod p (mod_exp)
 
 ## Criptografia
 
 Para criptografar uma mensagem m codificada como int:
 
-1. Escolhe-se um k qualquer.
+1. Escolhe-se um k aleatorio.
 2. Calcula-se c1 = g^k mod p
-3. Calcula-se c2 = m . y^k mod p
+3. Calcula-se c2 = m * h^k mod p
 4. O texto criptografado será (c1, c2)
 
 ## Descriptografia
