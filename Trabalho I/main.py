@@ -181,13 +181,13 @@ def messaging():
     cipher = encrypt_elgamal(msg, p, g, b_pub)
     decrypted = decrypt_elgamal(cipher, p, b_priv)
 
-    print(f"Primos usados: p={p}, q={q}")
-    print(f"Gerador g={g}")
-    print(f"Chave pública de B: {b_pub}")
-    print(f"Chave privada de B: {b_priv}")
-    print(f"Mensagem original: {msg}")
-    print(f"Mensagem criptografada: c1={cipher[0]}, c2={cipher[1]}")
-    print(f"Mensagem descriptografada: {decrypted}")
+    print("Primos: p=", p, " q=", q)
+    print("Gerador g=", g)
+    print("Chave pública de B: ", b_pub)
+    print("Chave privada de B: ", b_priv)
+    print("Mensagem original: ", msg)
+    print("Mensagem criptografada: c1=", cipher[0], ", c2=", cipher[1])
+    print("Mensagem descriptografada: ", decrypted)
 # --------------------------------------------------
 
 if __name__ == "__main__":

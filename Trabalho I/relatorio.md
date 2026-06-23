@@ -56,7 +56,6 @@ Para criptografar uma mensagem m codificada como int:
 
 ## Descriptografia
 
-Ao receber o par (c1, c2), o destinatário calcula:
 1. Calcular s = c1^x mod p
 2. Calcular mod_inverse(s, p):
 3. mensagem = c2 . s^-1 mod p
